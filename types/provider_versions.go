@@ -1,4 +1,4 @@
-package versions
+package types
 
 import (
 	"log"
@@ -56,6 +56,7 @@ func (a ProviderVersionList) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ProviderVersionList) Less(i, j int) bool { return a[i].GetSemVer().Less(a[j].GetSemVer()) }
 
 type ProtocolList []string
+
 func (a ProtocolList) Len() int      { return len(a) }
 func (a ProtocolList) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
 func (a ProtocolList) Less(i, j int) bool {
@@ -122,6 +123,11 @@ func (v *ProviderVersion) AddPlatforms(platforms []Platform) {
 
 type ProviderVersions struct {
 	Versions []ProviderVersion `json:"versions"`
+}
+
+func (v ProviderVersions) Construct() *ProviderVersions {
+	v.Versions = []ProviderVersion{}
+	return &v
 }
 
 func (p *ProviderVersions) FindVersion(version string) *ProviderVersion {

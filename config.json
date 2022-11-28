@@ -1,0 +1,7 @@
+{
+  "orgName": "consoso",
+  "pluginName": "custom-provider",
+  "protocols": ["5.0"],
+  "registryUrl": "registry.contoso.com",
+  "pgpKeyId": "ABC123ABC",
+}

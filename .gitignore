@@ -4,3 +4,6 @@ terraform.tfstate*
 tf-provider-registry-api-generator
 .idea/
 *.iml
+*.ipr
+*.iws
+registryDist

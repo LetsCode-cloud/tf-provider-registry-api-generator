@@ -1,4 +1,4 @@
-package versions
+package types
 
 type Platform struct {
 	Os   string `json:"os"`

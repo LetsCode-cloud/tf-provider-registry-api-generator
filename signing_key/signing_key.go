@@ -12,8 +12,6 @@ type PGPSigningKey struct {
 }
 
 func GetPublicSigningKey(fingerPrint string) PGPSigningKey {
-
-
 	cmd := exec.Command("gpg", "--armor", "--export", fingerPrint)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
@@ -33,7 +31,7 @@ func GetPublicSigningKey(fingerPrint string) PGPSigningKey {
 		log.Fatalf("%s", err)
 	}
 	if len(key) == 0 {
-		msg,_ := ioutil.ReadAll(stderr)
+		msg, _ := ioutil.ReadAll(stderr)
 		log.Fatalf("ERROR: failed to retrieve public key %s, %s", fingerPrint, string(msg))
 	}
 	return PGPSigningKey{fingerPrint, string(key)}

@@ -1,12 +1,14 @@
-module github.com/mollie/tf-provider-registry-api-generator
+module github.com/LetsCode-cloud/tf-provider-registry-api-generator
 
-go 1.15
+go 1.19
 
 require (
-	cloud.google.com/go/storage v1.14.0
-	github.com/alexflint/go-filemutex v1.1.0
-	github.com/binxio/gcloudconfig v0.1.5
-	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
-	golang.org/x/oauth2 v0.0.0-20210220000619-9bb904979d93
-	google.golang.org/api v0.40.0
+	github.com/mollie/tf-provider-registry-api-generator v0.3.2
+	github.com/spf13/cobra v1.6.1
+	gopkg.in/yaml.v3 v3.0.1
+)
+
+require (
+	github.com/inconshreveable/mousetrap v1.0.1 // indirect
+	github.com/spf13/pflag v1.0.5 // indirect
 )

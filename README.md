@@ -1,4 +1,4 @@
-Terraform provider registry API generator for Google Cloud Storage
+Terraform provider registry API generator
 =====================================================================
 Since version 0.13 of Hashicorp Terraform, terraform supports the notion of a provider registry. When you
 create your own provider, you can make it accessible via [https://registry.terraform.io](https://registry.terraform.io).
@@ -17,39 +17,6 @@ To create your own private provider registry on Google Cloud. you need to:
 3. generate the api documents
 4. reference the provider in your private registry
 
-## Create your private terraform provider registry
-To create your own terraform provider registry, you can use this [terraform template](./example/terraform/main.tf)
-It will:
-
-- reserve a public ip address
-- create a gcs bucket named `<project-name>-tf-registry`
-- add a DNS record for `registry.<your-domain-name>`
-- create a certificate for `registry.<your-domain-name>`
-- forward all https requests to the bucket
-- redirect http requests to https
-
-To only thing you need is a GCP project, and a DNS manage zone. To use this template to create your template, type:
-
-```shell
-cd example/terraform
-terraform init
-read -p "project id:" TF_VAR_project_id
-read -p "dns zone name:" TF_VAR_dns_managed_zone
-terraform apply
-```
-After a few minutes, you should be able to connect to the registry:
-
-```shell
-DOMAIN_NAME=$(cloud dns managed-zones \
-    describe $TF_VAR_dns_managed_zone \
-    --format 'value(dns_name)' | \
-    sed -e 's/\.$//' )
-
-REGISTRY_URL=https://registry.$DOMAIN_NAME
-
-curl $REGISTRY_URL
-````
-
 ## Build your custom terraform provider
 Now you can build your custom terraform provider. In this example, we will use the [sentry](https://github.com/jianyuan/terraform-provider-sentry.git)
 provider build by [Jian Yuan](https://jianyuan.io).
@@ -64,36 +31,20 @@ goreleaser release --rm-dist
 "
 ```
 
-## Upload the binaries to the Google Storage Bucket
-To upload the binaries into your storage bucket, type:
+## Upload the binaries to the Bucket
 
-```shell
-cd dist
-gsutil cp -r . gs://{$TF_VAR_project}-tf-registry/binaries/jianyuan/
-```
-
-Alternatively, you can add the following code to your `goreleaser.yaml`:
-```yaml
-blobs:
-  - provider: gs
-    bucket: '{{ .Env.TF_REGISTRY_BUCKET }}'
-    folder: 'binaries/{{ .Env.PROVIDER_NAMESPACE }}/{{ .ProjectName }}/{{ .Tag }}'
-```
-
-This will automatically upload the binaries into the bucket.
+aws cli/google cloud sdk
 
 ## Generate terraform provider registry API documents
 Finally, to generate the required terraform provider registry API documents, type:
 
 ```sh
-go get github.com/mollie/tf-provider-registry-api-generator
-$GOPATH/bin/tf-provider-registry-api-generator \
-  --bucket-name $TF_REGISTRY_BUCKET \
-  --prefix binaries/jianyuan/terraform-provider-sentry/v0.6.0/ \
-  --protocols 5.0 \
-  --namespace jianyuan \
-  --fingerprint $PGP_FINGERPRINT \
-  --url $REGISTRY_URL
+go get github.com/LetsCode-cloud/tf-provider-registry-api-generator
+$GOPATH/bin/tf-provider-registry-api-generator generate \
+--cfgFile "/Users/greg/Projects/lc2/tf-provider-registry-api-generator/config.json" \
+--binDir ./dist/ \
+--version 0.0.5
+
 ```
 
 Alternatively, you can add the following code to your `goreleaser.yaml`:

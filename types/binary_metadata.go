@@ -1,16 +1,12 @@
-package versions
+package types
 
 import (
-	"cloud.google.com/go/storage"
-	"context"
 	"fmt"
-	"github.com/mollie/tf-provider-registry-api-generator/signing_key"
-	"google.golang.org/api/iterator"
+	"github.com/LetsCode-cloud/tf-provider-registry-api-generator/signing_key"
 	"log"
 	"path"
 	"reflect"
 	"regexp"
-	"strings"
 )
 
 type GpgSigningKey struct {
@@ -137,29 +133,4 @@ func (l BinaryMetaDataList) SetPGPSigningKey(signingKey signing_key.PGPSigningKe
 		(l)[i].SigningKeys.GpgPublicKeys = []GpgSigningKey{{KeyID: signingKey.KeyID,
 			ASCIIArmor: signingKey.ASCIIArmor}}
 	}
-}
-
-func LoadFromBucket(bucket *storage.BucketHandle, prefix string) (filenames []string) {
-
-	filenames = make([]string, 0)
-
-	q := storage.Query{Prefix: fmt.Sprintf("%s/", strings.Trim(prefix, "/"))}
-	it := bucket.Objects(context.Background(), &q)
-	for {
-		attrs, err := it.Next()
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			log.Fatalf("list objects from bucket failed, %s", err)
-		}
-		matches := releaseName.FindStringSubmatch(attrs.Name)
-		if matches != nil {
-			filenames = append(filenames, attrs.Name)
-		} else {
-			log.Printf("INFO: skipping %s", attrs.Name)
-		}
-
-	}
-	return filenames
 }
